@@ -2,6 +2,17 @@ import React from 'react'
 import SyncLoader from 'react-spinners/SyncLoader';
 
 export default class PeopleList extends React.Component {
+    displayImage(image, alt) {
+        let src
+
+        if (image === null || image.medium === null) {
+            src = 'https://via.placeholder.com/201x295'
+        } else {
+            src = image.medium
+        }
+
+        return <img src={src} alt={alt}/>
+    }
 
     displayList() {
         if (this.props.list === null) {
@@ -14,10 +25,7 @@ export default class PeopleList extends React.Component {
                     {this.props.list.map(hit =>
                         <div key={hit.person.id} className="card">
                             <a href={hit.person.url} className="card-inner">
-                                {(hit.person.image !== null && hit.person.image.medium !== null) &&
-                                <img src={hit.person.image.medium} alt={hit.person.name + '\'s portrait'}/>
-                                }
-
+                                {this.displayImage(hit.person.image, hit.person.name + '\'s portrait')}
                                 <div className="title">
                                     {hit.person.name}
                                 </div>
