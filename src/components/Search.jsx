@@ -1,42 +1,48 @@
 import React from 'react'
+import SyncLoader from 'react-spinners/SyncLoader';
 
 export default class Search extends React.Component {
     state = {
-        showHits: [],
-        peopleHits: [],
+        showHits: false,
+        peopleHits: false,
         hasError: false,
         fetchingShows: false,
         fetchingPeople: false,
     };
 
-    handleKeyDown = (e) => {
-        if (e.key === 'Enter' && e.target.value !== '') {
-            this.setState({fetchingShows: true, fetchingPeople: true})
-            this.setState({showHits: [], peopleHits: []})
-            this.setState({hasError: false})
+    search = (e) => {
+        if (this.searchTimeout) clearTimeout(this.searchTimeout);
+        const searchValue = e.target.value
 
-            fetch(' http://api.tvmaze.com/search/shows?q=' + e.target.value)
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({showHits: data})
-                    this.setState({fetchingShows: false})
-                })
-                .catch(() => {
-                    this.setState({hasError: true})
-                    this.setState({fetchingShows: false})
-                })
+        this.searchTimeout = setTimeout(() => this.searchHandler(searchValue), 300);
+    }
 
-            fetch(' http://api.tvmaze.com/search/people?q=' + e.target.value)
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({peopleHits: data})
-                    this.setState({fetchingPeople: false})
-                })
-                .catch(() => {
-                    this.setState({hasError: true})
-                    this.setState({fetchingPeople: false})
-                })
-        }
+    searchHandler = (searchValue) => {
+        this.setState({fetchingShows: true, fetchingPeople: true})
+        this.setState({showHits: false, peopleHits: false})
+        this.setState({hasError: false})
+
+        fetch(' http://api.tvmaze.com/search/shows?q=' + searchValue)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({showHits: data})
+                this.setState({fetchingShows: false})
+            })
+            .catch(() => {
+                this.setState({hasError: true})
+                this.setState({fetchingShows: false})
+            })
+
+        fetch(' http://api.tvmaze.com/search/people?q=' + searchValue)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({peopleHits: data})
+                this.setState({fetchingPeople: false})
+            })
+            .catch(() => {
+                this.setState({hasError: true})
+                this.setState({fetchingPeople: false})
+            })
     }
 
     render() {
@@ -45,22 +51,13 @@ export default class Search extends React.Component {
         return (
             <>
                 <input type="text" placeholder="Search your favorite TV show" className="input-search"
-                       onKeyDown={this.handleKeyDown}/>
+                       onChange={evt => this.search(evt)}/>
 
-                {(fetchingShows || fetchingPeople) &&
-                <>
-                    <div className="lds-ring">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </>
-                }
+                <SyncLoader loading={fetchingShows || fetchingPeople}/>
 
-                {showHits.length > 0 &&
                 <div>
                     <h1>TV Shows</h1>
+                    {showHits.length > 0 &&
                     <ul>
                         {showHits.map(hit =>
                             <li key={hit.show.id}>
@@ -68,12 +65,16 @@ export default class Search extends React.Component {
                             </li>
                         )}
                     </ul>
-                </div>
-                }
+                    }
 
-                {peopleHits.length > 0 &&
+                    {showHits.length === 0 &&
+                    <p>There were no results for TV Shows.</p>
+                    }
+                </div>
+
                 <div>
                     <h1>People</h1>
+                    {peopleHits.length > 0 &&
                     <ul>
                         {peopleHits.map(hit =>
                             <li key={hit.person.id}>
@@ -81,8 +82,11 @@ export default class Search extends React.Component {
                             </li>
                         )}
                     </ul>
+                    }
+                    {peopleHits.length === 0 &&
+                    <p>There were no results for people.</p>
+                    }
                 </div>
-                }
             </>
         )
     }
