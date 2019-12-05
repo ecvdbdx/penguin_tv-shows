@@ -3,6 +3,7 @@ import SyncLoader from 'react-spinners/SyncLoader';
 
 export default class Search extends React.Component {
     state = {
+        showResults: false,
         showHits: false,
         peopleHits: false,
         hasError: false,
@@ -12,12 +13,18 @@ export default class Search extends React.Component {
 
     search = (e) => {
         if (this.searchTimeout) clearTimeout(this.searchTimeout);
-        const searchValue = e.target.value
+        const searchValue = e.target.value.trim()
 
-        this.searchTimeout = setTimeout(() => this.searchHandler(searchValue), 300);
+        if (searchValue !== '') {
+            this.searchTimeout = setTimeout(() => this.searchHandler(searchValue), 300);
+        }
     }
 
     searchHandler = (searchValue) => {
+        if (!this.showResults) {
+            this.setState({showResults: true})
+        }
+
         this.setState({fetchingShows: true, fetchingPeople: true})
         this.setState({showHits: false, peopleHits: false})
         this.setState({hasError: false})
@@ -46,47 +53,52 @@ export default class Search extends React.Component {
     }
 
     render() {
-        const {showHits, peopleHits, fetchingShows, fetchingPeople} = this.state;
+        const {showHits, peopleHits, fetchingShows, fetchingPeople, showResults} = this.state;
 
         return (
             <>
-                <input type="text" placeholder="Search your favorite TV show" className="input-search"
+                <input type="text" placeholder="Search your favorite TV show/actor" className="input-search"
                        onChange={evt => this.search(evt)}/>
+                {showResults &&
+                <>
+                    <div>
+                        <h1>TV Shows</h1>
+                        {showHits.length > 0 &&
+                        <ul>
+                            {showHits.map(hit =>
+                                <li key={hit.show.id}>
+                                    <a href={hit.show.url}>{hit.show.name}</a>
+                                </li>
+                            )}
+                        </ul>
+                        }
 
-                <SyncLoader loading={fetchingShows || fetchingPeople}/>
+                        {showHits.length === 0 &&
+                        <p>There were no results for TV Shows.</p>
+                        }
 
-                <div>
-                    <h1>TV Shows</h1>
-                    {showHits.length > 0 &&
-                    <ul>
-                        {showHits.map(hit =>
-                            <li key={hit.show.id}>
-                                <a href={hit.show.url}>{hit.show.name}</a>
-                            </li>
-                        )}
-                    </ul>
-                    }
+                        <SyncLoader loading={fetchingShows}/>
+                    </div>
 
-                    {showHits.length === 0 &&
-                    <p>There were no results for TV Shows.</p>
-                    }
-                </div>
+                    <div>
+                        <h1>People</h1>
+                        {peopleHits.length > 0 &&
+                        <ul>
+                            {peopleHits.map(hit =>
+                                <li key={hit.person.id}>
+                                    <a href={hit.person.url}>{hit.person.name}</a>
+                                </li>
+                            )}
+                        </ul>
+                        }
+                        {peopleHits.length === 0 &&
+                        <p>There were no results for people.</p>
+                        }
 
-                <div>
-                    <h1>People</h1>
-                    {peopleHits.length > 0 &&
-                    <ul>
-                        {peopleHits.map(hit =>
-                            <li key={hit.person.id}>
-                                <a href={hit.person.url}>{hit.person.name}</a>
-                            </li>
-                        )}
-                    </ul>
-                    }
-                    {peopleHits.length === 0 &&
-                    <p>There were no results for people.</p>
-                    }
-                </div>
+                        <SyncLoader loading={fetchingPeople}/>
+                    </div>
+                </>
+                }
             </>
         )
     }
