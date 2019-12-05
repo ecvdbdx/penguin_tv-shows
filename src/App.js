@@ -1,5 +1,6 @@
 import React from 'react';
 import './scss/app.scss';
+import Search from "./components/Search";
 
 function App() {
     return (
@@ -10,10 +11,11 @@ function App() {
                 </nav>
             </header>
             <main>
-                Content
+                <Search/>
             </main>
         </div>
     );
 }
+
 
 export default App;
