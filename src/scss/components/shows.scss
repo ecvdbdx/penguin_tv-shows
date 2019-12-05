@@ -1,0 +1,26 @@
+.shows {
+  display: flex;
+  flex-wrap: wrap;
+
+  .show {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+
+    .show-inner {
+      text-decoration: none !important;
+      color: black;
+    }
+
+    .name {
+      padding: 1rem 0;
+      text-align: center;
+    }
+
+    img {
+      box-shadow: 0 0 20px rgba(#000, .25);
+    }
+  }
+}
+
