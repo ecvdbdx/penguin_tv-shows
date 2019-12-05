@@ -10,7 +10,7 @@ function App() {
                     Navbar
                 </nav>
             </header>
-            <main>
+            <main className="container">
                 <Search/>
             </main>
         </div>

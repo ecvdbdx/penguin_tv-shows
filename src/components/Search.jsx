@@ -64,13 +64,21 @@ export default class Search extends React.Component {
                     <div>
                         <h1>TV Shows</h1>
                         {showHits.length > 0 &&
-                        <ul>
+                        <div className="shows">
                             {showHits.map(hit =>
-                                <li key={hit.show.id}>
-                                    <a href={hit.show.url}>{hit.show.name}</a>
-                                </li>
+                                <div key={hit.show.id} className="show">
+                                    <a href={hit.show.url} className="show-inner">
+                                        {hit.show.image !== null &&
+                                        <img src={hit.show.image.medium} alt={hit.show.name + '\'s cover'}/>
+                                        }
+
+                                        <div className="name">
+                                            {hit.show.name}
+                                        </div>
+                                    </a>
+                                </div>
                             )}
-                        </ul>
+                        </div>
                         }
 
                         {showHits.length === 0 &&
