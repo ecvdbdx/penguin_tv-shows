@@ -10,15 +10,15 @@ export default class ShowList extends React.Component {
             return (<p>There are no TV Shows.</p>)
         } else if (this.props.list.length > 0) {
             return (
-                <div className="shows">
+                <div className="cards">
                     {this.props.list.map(hit =>
-                        <div key={hit.show.id} className="show">
-                            <a href={hit.show.url} className="show-inner">
+                        <div key={hit.show.id} className="card">
+                            <a href={hit.show.url} className="card-inner">
                                 {hit.show.image !== null &&
                                 <img src={hit.show.image.medium} alt={hit.show.name + '\'s cover'}/>
                                 }
 
-                                <div className="name">
+                                <div className="title">
                                     {hit.show.name}
                                 </div>
                             </a>

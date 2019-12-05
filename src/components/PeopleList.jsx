@@ -10,13 +10,21 @@ export default class PeopleList extends React.Component {
             return (<p>There is no people.</p>)
         } else if (this.props.list.length > 0) {
             return (
-                <ul>
+                <div className="cards">
                     {this.props.list.map(hit =>
-                        <li key={hit.person.id}>
-                            <a href={hit.person.url}>{hit.person.name}</a>
-                        </li>
+                        <div key={hit.person.id} className="card">
+                            <a href={hit.person.url} className="card-inner">
+                                {(hit.person.image !== null && hit.person.image.medium !== null) &&
+                                <img src={hit.person.image.medium} alt={hit.person.name + '\'s portrait'}/>
+                                }
+
+                                <div className="title">
+                                    {hit.person.name}
+                                </div>
+                            </a>
+                        </div>
                     )}
-                </ul>
+                </div>
             )
         }
     }

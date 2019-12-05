@@ -1,19 +1,19 @@
-.shows {
+.cards {
   display: flex;
   flex-wrap: wrap;
 
-  .show {
+  .card {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 2rem;
 
-    .show-inner {
+    .card-inner {
       text-decoration: none !important;
       color: black;
     }
 
-    .name {
+    .title {
       padding: 1rem 0;
       text-align: center;
     }
