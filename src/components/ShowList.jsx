@@ -3,13 +3,7 @@ import SyncLoader from 'react-spinners/SyncLoader';
 
 export default class ShowList extends React.Component {
     displayImage(image, alt) {
-        let src
-
-        if (image === null || image.medium === null) {
-            src = 'https://via.placeholder.com/201x295'
-        } else {
-            src = image.medium
-        }
+        let src = image === null || image.medium === null ? 'https://via.placeholder.com/210x295' : image.medium
 
         return <img src={src} alt={alt}/>
     }
