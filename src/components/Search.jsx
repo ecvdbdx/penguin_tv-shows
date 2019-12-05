@@ -1,17 +1,16 @@
 import React from 'react'
-import SyncLoader from 'react-spinners/SyncLoader';
+import ShowList from "./ShowList";
+import PeopleList from "./PeopleList";
 
 export default class Search extends React.Component {
     state = {
         showResults: false,
-        showHits: false,
-        peopleHits: false,
+        showHits: null,
+        peopleHits: null,
         hasError: false,
-        fetchingShows: false,
-        fetchingPeople: false,
     };
 
-    search = (e) => {
+    search(e) {
         if (this.searchTimeout) clearTimeout(this.searchTimeout);
         const searchValue = e.target.value.trim()
 
@@ -20,40 +19,35 @@ export default class Search extends React.Component {
         }
     }
 
-    searchHandler = (searchValue) => {
+    searchHandler(searchValue) {
         if (!this.showResults) {
             this.setState({showResults: true})
         }
 
-        this.setState({fetchingShows: true, fetchingPeople: true})
-        this.setState({showHits: false, peopleHits: false})
+        this.setState({showHits: null, peopleHits: null})
         this.setState({hasError: false})
 
         fetch(' http://api.tvmaze.com/search/shows?q=' + searchValue)
             .then(response => response.json())
             .then(data => {
                 this.setState({showHits: data})
-                this.setState({fetchingShows: false})
             })
             .catch(() => {
                 this.setState({hasError: true})
-                this.setState({fetchingShows: false})
             })
 
         fetch(' http://api.tvmaze.com/search/people?q=' + searchValue)
             .then(response => response.json())
             .then(data => {
                 this.setState({peopleHits: data})
-                this.setState({fetchingPeople: false})
             })
             .catch(() => {
                 this.setState({hasError: true})
-                this.setState({fetchingPeople: false})
             })
     }
 
     render() {
-        const {showHits, peopleHits, fetchingShows, fetchingPeople, showResults} = this.state;
+        const {showHits, peopleHits, showResults} = this.state;
 
         return (
             <>
@@ -61,50 +55,8 @@ export default class Search extends React.Component {
                        onChange={evt => this.search(evt)}/>
                 {showResults &&
                 <>
-                    <div>
-                        <h1>TV Shows</h1>
-                        {showHits.length > 0 &&
-                        <div className="shows">
-                            {showHits.map(hit =>
-                                <div key={hit.show.id} className="show">
-                                    <a href={hit.show.url} className="show-inner">
-                                        {hit.show.image !== null &&
-                                        <img src={hit.show.image.medium} alt={hit.show.name + '\'s cover'}/>
-                                        }
-
-                                        <div className="name">
-                                            {hit.show.name}
-                                        </div>
-                                    </a>
-                                </div>
-                            )}
-                        </div>
-                        }
-
-                        {showHits.length === 0 &&
-                        <p>There were no results for TV Shows.</p>
-                        }
-
-                        <SyncLoader loading={fetchingShows}/>
-                    </div>
-
-                    <div>
-                        <h1>People</h1>
-                        {peopleHits.length > 0 &&
-                        <ul>
-                            {peopleHits.map(hit =>
-                                <li key={hit.person.id}>
-                                    <a href={hit.person.url}>{hit.person.name}</a>
-                                </li>
-                            )}
-                        </ul>
-                        }
-                        {peopleHits.length === 0 &&
-                        <p>There were no results for people.</p>
-                        }
-
-                        <SyncLoader loading={fetchingPeople}/>
-                    </div>
+                    <ShowList list={showHits}/>
+                    <PeopleList list={peopleHits}/>
                 </>
                 }
             </>
