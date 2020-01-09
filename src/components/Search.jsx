@@ -64,7 +64,7 @@ export default class Search extends React.Component {
           <>
             <ShowList
               list={showHits}
-              followedShow={this.props.followedShow}
+              followedShows={this.props.followedShows}
               toggleFollowShow={this.props.toggleFollowShow}
             />
             <PeopleList list={peopleHits} />

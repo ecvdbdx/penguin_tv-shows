@@ -7,20 +7,23 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 export default class App extends React.Component {
   state = {
-    followedShow: []
+    followedShows: []
   };
 
   toggleFollowShow(id) {
-    var showIndex = this.state.followedShow.indexOf(id);
+    const showIndex = this.state.followedShows.indexOf(id);
 
     if (showIndex !== -1) {
-      console.log("ca marche");
+      let array = this.state.followedShows
+      array.splice(showIndex, 1)
+
       this.setState({
-        followedShow: this.state.followedShow.splice(showIndex, 1)
+        followedShows: array
       });
     } else {
-      console.log("ca marche pas");
-      this.setState({ followedShow: this.state.followedShow.push(id) });
+      this.setState({
+        followedShows: [...this.state.followedShows, id]
+      });
     }
   }
 
@@ -42,11 +45,11 @@ export default class App extends React.Component {
             <main className="container">
               <Switch>
                 <Route path="/MyShows">
-                  <MyShows />
+                  <MyShows followedShows={this.state.followedShows} />
                 </Route>
                 <Route path="/Search">
                   <Search
-                    followedShow={this.state.followedShow}
+                    followedShows={this.state.followedShows}
                     toggleFollowShow={this.toggleFollowShow.bind(this)}
                   />
                 </Route>

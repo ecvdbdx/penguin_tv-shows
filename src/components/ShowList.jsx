@@ -11,12 +11,11 @@ export default class ShowList extends React.Component {
     return (
       <div>
         <img src={src} alt={alt} />
-        <h1>{this.props.followedShow}</h1>
       </div>
     );
   }
   displayLabel(id) {
-    return this.props.followedShow.indexOf(id) !== -1
+    return this.props.followedShows.includes(id)
       ? "Unfollow this show"
       : "Follow this show";
   }
