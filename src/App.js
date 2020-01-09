@@ -45,7 +45,8 @@ export default class App extends React.Component {
             <main className="container">
               <Switch>
                 <Route path="/MyShows">
-                  <MyShows followedShows={this.state.followedShows} />
+                  <MyShows followedShows={this.state.followedShows}
+                           toggleFollowShow={this.toggleFollowShow.bind(this)}/>
                 </Route>
                 <Route path="/Search">
                   <Search
